@@ -21,7 +21,7 @@ $(function () {
 
 document.addEventListener('DOMContentLoaded', () => {
   // ハンバーガーボタン（PC用・SP用の両方）を取得
-  const hamburgerBtns = document.querySelectorAll('.humberger');
+  const hamburgerBtns = document.querySelectorAll('.hamburger');
   const naviContents = document.querySelector('.sp-navi-contents');
   const overlay = document.querySelector('.overlay');
 
