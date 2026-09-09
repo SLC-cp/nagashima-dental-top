@@ -55,3 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// 治療の流れ（横スライダー）
+$(function () {
+  $('.flow-slider').slick({
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    arrows: true,
+    dots: true,
+    infinite: false,
+    prevArrow: '<button type="button" class="slick-prev" aria-label="前へ">前へ</button>',
+    nextArrow: '<button type="button" class="slick-next" aria-label="次へ">次へ</button>',
+    responsive: [
+      { breakpoint: 1024, settings: { slidesToShow: 2 } },
+      { breakpoint: 800,  settings: { slidesToShow: 1.15, arrows: true } }
+    ]
+  });
+});
