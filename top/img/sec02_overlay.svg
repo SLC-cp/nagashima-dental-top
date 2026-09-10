@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 830" width="1800" height="830" preserveAspectRatio="none">
+  <!--
+    sec02 テキスト背後の白いパネル（PC用）
+    左側にほぼ不透明の白、右辺は斜め（上端56%・下端50%）。右側は写真をそのまま見せる。
+  -->
+  <polygon points="0,0 1008,0 900,830 0,830" fill="#ffffff" fill-opacity="0.72"/>
+</svg>

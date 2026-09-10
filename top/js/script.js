@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
       overlay.classList.toggle('is-active');
       overlay.classList.toggle('active');
     }
+
+    // メニューを開いている間は背面のスクロールを止める
+    document.body.classList.toggle('is-fixed');
   };
 
   // すべてのハンバーガーボタンにクリックイベントを設定

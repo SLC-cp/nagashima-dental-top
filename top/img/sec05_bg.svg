@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 2350" width="1800" height="2350">
+  <!--
+    治療の流れ 背景（参考サイトの医院紹介と同じ構図。CSSで cover 指定）
+    色: サイトの紺 rgb(4,14,46) / 青 rgb(29,103,143) を薄めた青灰4段階＋白
+      T1 #f3f8fb / T2 #e6eff5 / T3 #d6e4ee / T4 #c6d8e6
+  -->
+  <rect width="1800" height="2350" fill="#ffffff"/>
+  <g stroke-width="1.5" stroke-linejoin="round">
+    <!-- 上段 -->
+    <polygon points="0,0 915,0 0,800" fill="#e6eff5" stroke="#e6eff5"/>
+    <polygon points="915,0 1800,0 1800,800" fill="#d6e4ee" stroke="#d6e4ee"/>
+    <!-- 中段 -->
+    <polygon points="0,800 1800,800 900,1650" fill="#d6e4ee" stroke="#d6e4ee"/>
+    <polygon points="1800,800 1800,1650 900,1650" fill="#f3f8fb" stroke="#f3f8fb"/>
+    <!-- 下段 -->
+    <polygon points="0,1650 900,1650 0,2350" fill="#e6eff5" stroke="#e6eff5"/>
+    <polygon points="1800,1750 1800,2350 1030,2350" fill="#c6d8e6" stroke="#c6d8e6"/>
+  </g>
+</svg>

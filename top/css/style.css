@@ -995,12 +995,6 @@ body.is-fixed {
   visibility: visible;
 }
 
-/* PC用ハンバーガーボタンが開いた時の背景色を透明化 */
-.pc-hamburger.hamburger.active,
-.pc-hamburger.hamburger.is-active {
-  background: none !important;
-}
-
 
 
 /* ハンバーガーボタンが開いている時のバツ印アニメーション */
@@ -1016,12 +1010,6 @@ body.is-fixed {
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-/* 開いた状態のバツ印（span要素）に影をつける */
-.hamburger.active span:not(.ttl),
-.hamburger.is-active span:not(.ttl) {
-  /* 影の指定：右オフセット 下オフセット ぼかし範囲 影の色 */
-  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.6));
-}
 
 /*---------------- レスポンシブFV ----------------- */
 @media screen and (max-width: 800px) and (min-width: 0px) {
@@ -1468,6 +1456,9 @@ font-family: "Cormorant Garamond", serif;
 /*sec02*/
 .sec02 {
   min-height: 45.5vw;
+  padding: 60px 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1476,13 +1467,11 @@ font-family: "Cormorant Garamond", serif;
   align-items: center;
 }
 
+/* 上層にテキスト背後の白いパネル（sec02_overlay.svg）、下層に写真（固定・パララックス） */
 .sec02 {
   background-image:
-    url("../img/sec02_bg_white.png"),
+    url("../img/sec02_overlay.svg"),
     url("../img/sec02_bg_.jpg");
-
-  background-color: rgba(255, 255, 255, 0.1);
-        background-blend-mode: lighten;
 
   background-repeat:
     no-repeat,
@@ -1492,49 +1481,81 @@ font-family: "Cormorant Garamond", serif;
     center bottom,
     right center;
 
+  /* パネルはセクションの高さいっぱいに引き伸ばす（幅が変わっても途切れない） */
   background-size:
-    100% auto,cover;
+    100% 100%,cover;
 
   background-attachment:
     scroll,
     fixed;
 }
+/* スマホ: 写真は画面に固定した層（::before）をセクション範囲で切り抜いて見せる
+   （background-attachment: fixed は iOS 非対応のため使わない） */
 @media screen and (max-width: 800px) and (min-width: 0px) {
   .sec02 {
-    background-image: url(../img/sec02_bg_sp.png);
-    background-color: rgba(254, 247, 247, 0.3);
-    background-blend-mode: lighten;
-    background-attachment: fixed; /* ★ここを fixed に修正 */
+    position: relative;
+    z-index: 0;
+    min-height: 0;
+    padding: 70px 0;
+    display: block;
+    background: none;
+    -webkit-clip-path: inset(0);
+    clip-path: inset(0);
+  }
+
+  .sec02::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100lvh;
+    background: url("../img/sec02_bg_sp.png") no-repeat center center / cover;
+    z-index: -1;
+    pointer-events: none;
   }
 }
 
+/* テキストは左配置（写真の顔が右上にあるため） */
 .sec02 .sec02-layout {
-  margin: 0 auto 0 07vw;
-  width: 40vw;
+  margin: 0 auto 0 7vw;
+  width: 43vw;
   font-family: "Zen Kaku Gothic Antique", sans-serif;
   font-weight:400;
 }
 
+/* スマホ: テキスト背後の白パネル（右下の角を斜めにカット） */
 @media screen and (max-width: 800px) and (min-width: 0px) {
     .sec02 .sec02-layout {
+        position: relative;
         margin: 0 auto;
-        width: 90%;
+        width: 88%;
+        padding: 32px 22px 36px;
+        background: rgba(255, 255, 255, 0.85);
+        -webkit-clip-path: polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%);
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 28px) 100%, 0 100%);
     }
 }
 
 .sec02 .sec02-layout .l-ttl {
   font-family: "Zen Old Mincho", serif;
   font-weight:500;
-  font-size: 2.2vw;
-  text-shadow: 0 0 15px #fff;
-  margin-bottom: 50px;
+  font-size: 3.4vw;
+  line-height: 1.4;
+  text-shadow: 0 0 8px #fff, 0 0 16px #fff;
+  margin-bottom: 40px;
+}
+
+.sec02 .sec02-layout .l-txt {
+  text-shadow: 0 0 6px #fff, 0 0 12px #fff;
 }
 
 @media screen and (max-width: 800px) and (min-width: 0px) {
   .sec02 .sec02-layout .l-ttl {
-        font-size:7.5vw;
-        margin:0;
-        padding:50px 10px;
+        font-size: 24px;
+        margin: 0 0 30px;
+        padding: 0;
         text-align: center;
     }
 }
@@ -1542,8 +1563,8 @@ font-family: "Cormorant Garamond", serif;
 @media screen and (max-width: 800px) and (min-width: 0px) {
     .sec02 .sec02-layout .l-txt {
       font-size:15px;
-      padding-bottom:70px;
-      text-align: center;
+      text-align: left;
+      text-shadow: none;
     }
 }
 
@@ -2594,6 +2615,62 @@ font-family:var(--tm-font-serif);
     }
 }
 
+/*------------------ 医師紹介 タブレット版（801〜1100px）：PC と同じ構成を 1440px 基準の比率で縮小 -----------------*/
+@media screen and (min-width: 801px) and (max-width: 1100px) {
+    /* --- 上段：見出し・集合写真・メッセージ（PC と同じ重なり構成） --- */
+    .tm-team { padding: 6.9vw 0; }                                          /* 100 */
+    .tm-team::before { width: 52.8vw; height: 52.8vw; top: -4.9vw; right: -9.7vw; }
+    .tm-team::after  { width: 27.8vw; height: 27.8vw; right: -5.6vw; }
+    .tm-team__brand { display: block; right: 2.9vw; }                       /* 960px 以下の非表示を解除 */
+    .tm-team__brand-mark { width: 5vw; margin-bottom: 0.55vw; }             /* 72 */
+    .tm-team__brand-name { font-size: max(10px, 0.9vw); }
+    .tm-team__hero { padding-top: 2.1vw; }                                  /* 30 */
+    .tm-team__lead { width: 55%; padding-left: 1vw; }                       /* 960px 以下の 100% を戻す */
+    .tm-team__eyebrow { font-size: max(12px, 1.04vw); gap: 1vw; margin-bottom: 1.7vw; letter-spacing: .25em; }
+    .tm-team__eyebrow::after { width: 8.3vw; }                              /* 120 */
+    .tm-team__title { font-size: clamp(20px, 2.36vw, 34px); }               /* 34 */
+    .tm-team__photo-wrap {                                                  /* 960px 以下の relative を戻す */
+        position: absolute;
+        top: 10.8vw;                                                        /* 156 */
+        right: 0;
+        width: 60%;
+        margin-top: 0;
+    }
+    .tm-team__message {
+        margin-top: 9.7vw;                                                  /* 140 */
+        width: 40%;
+        min-height: 23.5vw;                                                 /* 338 */
+        padding: 2.4vw 2.9vw;                                               /* 34 / 42 */
+    }
+    .tm-team__message-badge { font-size: max(11px, 1.08vw); padding: 0.55vw 1.4vw; margin-bottom: 1.7vw; }
+    .tm-team__message-title { font-size: max(17px, 1.94vw); margin-bottom: 1.25vw; }   /* 28 */
+    .tm-team__message-text  { font-size: max(11px, 1vw); line-height: 1.9; }
+    .tm-team__script { font-size: max(14px, 1.67vw); margin-top: 1.5vw; }   /* 24 */
+
+    /* --- 下段：医師スライド（写真 390px | 本文 の 2 カラムを維持） --- */
+    .tm-team__slider-section { margin-top: 12.5vw; padding: 5.2vw; }        /* 180 / 75 */
+    .tm-team__advisor-card { grid-template-columns: 27vw 1fr; min-height: 0; }   /* 390 */
+    .tm-team__advisor-photo { height: 34.7vw; min-height: 0; }              /* 500 */
+    .tm-team__advisor-body { padding: 3.5vw 3.6vw 2.6vw 1.9vw; }            /* 50 52 38 28 */
+    .tm-team__profile-role { font-size: max(11px, 1.18vw); margin-bottom: 0.7vw; }
+    .tm-team__profile-head { gap: 1.25vw; padding-bottom: 1.1vw; }
+    .tm-team__profile-name-ja { font-size: max(26px, 3.4vw); }              /* 49 */
+    .tm-team__profile-name-en { font-size: max(11px, 1.18vw); margin-bottom: 0.5vw; }
+    .tm-team__summary { font-size: max(11px, 1.08vw); line-height: 1.8; margin: 1.25vw 0 1.7vw; }
+    .tm-team__focus-list { gap: 1vw; }
+    .tm-team__focus-item { grid-template-columns: max(28px, 3.3vw) 1fr; gap: 0.9vw; }
+    .tm-team__focus-icon { width: max(28px, 2.9vw); height: max(28px, 2.9vw); }
+    .tm-team__focus-icon svg { width: max(14px, 1.5vw); height: max(14px, 1.5vw); }
+    .tm-team__focus-title { font-size: max(11px, 1.04vw); }
+    .tm-team__focus-text  { font-size: max(11px, 1vw); }
+    .tm-team__detail { margin-top: 1.25vw; }
+    .tm-team__detail-summary { font-size: max(11px, 0.94vw); padding: 0.6vw 1.25vw; min-width: 9.7vw; }
+    .tm-team__nav { width: max(40px, 4vw); height: max(40px, 4vw); }        /* 58 */
+    .tm-team__nav svg { width: max(12px, 1.25vw); height: max(12px, 1.25vw); }
+    .tm-team__dots-wrap { margin-top: 1.5vw; gap: 1vw; }
+    .tm-team__name-btn { font-size: max(11px, 1vw); padding: 0.7vw 1.25vw; min-width: 6.5vw; }
+}
+
 
 /* ========================================
   TOP追加ブロック：高度な自費診療
@@ -3463,7 +3540,7 @@ color:rgb(4, 14, 46);}
 
   /* ----------------sec08------------ */
 
-  .sec08{background-color:rgba(234,249,255,0.5);}
+  .sec08{background-color:#e6eff5;}
 
   .sec08 .container {
     margin: 0 auto;
@@ -3478,57 +3555,70 @@ color:rgb(4, 14, 46);}
     }
 }
 
-.sec08 .u-h2{height:100px;
-margin-top:100px;}
+.sec08 .u-h2{
+    text-align: center;
+    padding-top: 100px;
+    margin-bottom: 60px;
+}
 
  @media screen and (max-width: 800px) and (min-width: 0px){
-  .sec08 .u-h2{text-align: center;}}
+  .sec08 .u-h2{
+      padding-top: 60px;
+      margin-bottom: 40px;
+  }
+}
 
 .sec08 .u-h2 .en {
-   font-family: "Cormorant Garamond", serif;
-    font-size: 60px;
-    text-align: left;
-    padding: 0 0 25px;
-    margin: 0 0 50px;
-    position: relative;
+    display: block;
+    color: #44200d;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 50px;
+    line-height: 1;
+    margin: 0 0 15px;
 }
 
 @media screen and (max-width: 800px) and (min-width: 0px) {
 .sec08 .u-h2 .en{
-        font-size: 50px;
-        line-height: 1.3;
+        font-size: 40px;
+        margin-bottom: 10px;
         letter-spacing: 0;
     }
 }
 
-.sec08 .u-h2 .jp{    display: flex;
+.sec08 .u-h2 .jp{
+    display: flex;
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
     font-family: "Zen Old Mincho", serif;
-    font-size: 25px;
-    padding-top:20px;
+    font-size: 20px;
+    line-height: 1.5;
   }
 
 @media screen and (max-width: 800px) and (min-width: 0px) {
 .sec08 .u-h2 .jp{
         font-size: 18px;
-        line-height: 1;
         letter-spacing: 0;
-        padding: 0 0 20px;
-        margin: 0 0 30px;
-        justify-content: center;
     }
 }
 
-.sec08 .u-h2 .jp::before{content: "";
+.sec08 .u-h2 .jp::before,
+.sec08 .u-h2 .jp::after{
+    content: "";
     background: #474748;
     width: 30px;
     height: 1px;
-    margin-right: 20px;}
+}
+
+.sec08 .u-h2 .jp::before{margin-right: 20px;}
+.sec08 .u-h2 .jp::after{margin-left: 20px;}
 
 @media screen and (max-width: 800px) and (min-width: 0px){
-  .sec08 .u-h2 .jp::before{display:none;}
+  .sec08 .u-h2 .jp::before,
+  .sec08 .u-h2 .jp::after{display:none;}
 }
 
 
@@ -3551,7 +3641,7 @@ margin-top:100px;}
 
 .sec08 .list-card-02.column2 li{
     padding: 30px;
-    margin-top:100px;
+    margin-top: 0;
     margin-bottom: 30px;
     width: 35%;
 }
@@ -3559,7 +3649,7 @@ margin-top:100px;}
 @media screen and (max-width: 800px) and (min-width: 0px) {
   .sec08 .list-card-02.column2 li {
         padding: 20px 15px;
-        margin-top:50px;
+        margin-top: 0;
         width: 100%;
     }
 }
@@ -3591,16 +3681,9 @@ img {
 /* --------------------sec05----------------- */
 
 .sec05 {
-    padding: 50px 0;
-    background: url(../img/sec05_bg.png) no-repeat center top / cover; 
+    background: #f3f8fb url(../img/sec05_bg.svg) no-repeat center top / cover;
     padding: 120px 0;
   }
-
-@media screen and (max-width: 800px) and (min-width: 0px) {
-    .sec05 {
-background-position: calc(50% - 50px) center;
-    }
-}
 
 .sec05 .sec05-layout {
     display: -ms-grid;
@@ -5006,6 +5089,33 @@ span, small, em, time, i {
 
 
 
+/* ヘッダー タブレット版（801〜1100px）：PC 値（1440px 基準）を同じ比率で縮小（px ÷ 14.4 = vw） */
+@media screen and (min-width: 801px) and (max-width: 1100px) {
+  .header h1 { font-size: max(10px, 1.04vw); margin-bottom: 0.55vw; letter-spacing: 0; white-space: nowrap; }
+  .h-logo { width: 27.8vw; padding: 2.78vw 0 0 2.78vw; }            /* 400 / 40 */
+  .h-contact {
+    width: 34.7vw;                                                    /* 500 */
+    height: 10.4vw;                                                   /* 150：ハンバーガーと同じ高さ */
+    margin-right: 10.4vw;                                             /* 150 */
+    padding: 0 2.78vw 0 1.74vw;                                       /* 40 / 25 */
+  }
+  .h-contact .txt { margin-right: 2.78vw; }                           /* 40 */
+  .h-contact .txt p { line-height: 1; margin: 0; }                    /* 本文の行送り 30px を打ち消す */
+  .h-contact .txt > p { margin: 0.45vw 0; }
+  .fd-ul { display: flex; align-items: center; gap: 0.45vw; line-height: 1; }
+  .fd-ul .h-tel .small { display: none; }                             /* 空 span の余白を消す */
+  .h-contact .free-dial { width: 2.1vw; min-width: 16px; }            /* 30 */
+  .h-contact .free-dial img { display: block; width: 100%; }
+  .h-contact .btn { width: 2.43vw; min-width: 20px; }                 /* 35 */
+  .h-tel { font-size: max(12px, 1.18vw); }                            /* 17 */
+  .h-tel .small { font-size: max(11px, 1.11vw); margin-right: 0.35vw; }
+  .h-time { font-size: max(9px, 0.76vw); line-height: 1.4; }          /* 11 */
+  .h-time dt { width: 3.8vw; }                                        /* 55 */
+  .h-time dd { padding-left: 3.8vw; }
+  .pc-hamburger.hamburger { width: 10.4vw; height: 10.4vw; }          /* 150 */
+  .pc-hamburger.hamburger span { width: 2.78vw; }                     /* 40 */
+}
+
   /* ヘッダーSP版 */
 @media screen and (max-width: 800px) and (min-width: 0px) {
     .header .h-container {
@@ -5067,3 +5177,173 @@ span, small, em, time, i {
     font-size: 15px;
     font-weight: 700;
 }}
+/* ==========================================
+   ハンバーガーメニュー改修（見やすさ・操作性）
+   - overlay はドロワーの外に置き、ドロワーより下に重ねる
+   - PC: 開いた時の×は右上の白い円形ボタン、ドロワー上余白でテキストと重ねない
+   - 項目: 親項目は罫線＋太字で区切り、子項目は字下げ・行間1.6
+========================================== */
+.overlay {
+  background: rgba(4, 14, 46, 0.45);
+  z-index: 997;
+}
+
+.sp-navi-contents {
+  width: min(560px, 50vw);
+  padding: 100px 56px 40px;
+  background: #E6F8FF;
+  color: #4a4443;
+  z-index: 998;
+}
+
+/* 2列は段組み（各列が独立して流れるので行の高さを共有しない） */
+@media screen and (min-width: 801px) {
+  .sp-navi-contents .child > ul {
+    display: block;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    columns: 2;
+    -webkit-column-gap: 40px;
+    -moz-column-gap: 40px;
+    column-gap: 40px;
+  }
+
+  .sp-navi-contents .child > ul > li {
+    -webkit-column-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .sp-navi-contents .child > ul > li.hm-implants {
+    -webkit-column-break-before: always;
+    break-before: column;
+  }
+}
+
+.sp-navi-contents .child ul li {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sp-navi-contents .child ul li a {
+  text-decoration: none;
+  -webkit-transition: color 0.2s;
+  transition: color 0.2s;
+}
+
+.sp-navi-contents .child ul li a:hover {
+  text-decoration: underline;
+}
+
+/* 親項目（hm-〜） */
+.sp-navi-contents .child ul li[class^="hm-"] {
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(68, 32, 13, 0.18);
+}
+
+.sp-navi-contents .child ul li[class^="hm-"] + li[class^="hm-"] {
+  margin-top: 0;
+}
+
+.sp-navi-contents .child ul li.hm-about,
+.sp-navi-contents .child ul li.hm-implants {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.sp-navi-contents .child ul li[class^="hm-"] a {
+  display: block;
+  padding: 4px 0;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.5;
+  color: #44200d;
+}
+
+/* 子項目 */
+.sp-navi-contents .child ul li:not([class]) a {
+  display: block;
+  padding: 4px 0 4px 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* PC: 開いた時の閉じるボタン（右上の白い円） */
+.pc-hamburger.hamburger.is-active {
+  top: 16px;
+  right: 16px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #fff;
+  -webkit-box-shadow: 0 2px 10px rgba(4, 14, 46, 0.18);
+  box-shadow: 0 2px 10px rgba(4, 14, 46, 0.18);
+}
+
+.pc-hamburger.hamburger.is-active span {
+  width: 30px;
+  background: #44200d;
+}
+
+/* スマホ */
+@media screen and (max-width: 800px) and (min-width: 0px) {
+  .sp-navi-contents {
+    width: 100%;
+    padding: 24px 20px 90px;
+  }
+
+  .sp-navi-contents .child > ul > li {
+    margin-bottom: 0;
+  }
+
+  .sp-navi-contents .child ul li[class^="hm-"] {
+    margin-top: 18px;
+    padding-top: 12px;
+  }
+
+  .sp-navi-contents .child ul li[class^="hm-"] + li[class^="hm-"] {
+    margin-top: 0;
+  }
+
+  .sp-navi-contents .child ul li[class^="hm-"] a {
+    padding: 6px 0;
+    font-size: 17px;
+  }
+
+  .sp-navi-contents .child ul li:not([class]) a {
+    padding: 9px 0 9px 14px;
+    font-size: 15px;
+  }
+
+  /* 下部バーの MENU ボタン: 開いている時は×と CLOSE 表示 */
+  .sp-navi-btns .hamburger.is-active {
+    background: linear-gradient(135deg, rgba(2, 157, 240, 0.9), rgba(81, 208, 213, 0.7));
+  }
+
+  .sp-navi-btns .hamburger.is-active span:not(.ttl):nth-of-type(1) {
+    top: 26px;
+    -webkit-transform: translateX(-50%) rotate(45deg);
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  .sp-navi-btns .hamburger.is-active span:not(.ttl):nth-of-type(2) {
+    opacity: 0;
+  }
+
+  .sp-navi-btns .hamburger.is-active span:not(.ttl):nth-of-type(3) {
+    top: 26px;
+    -webkit-transform: translateX(-50%) rotate(-45deg);
+    transform: translateX(-50%) rotate(-45deg);
+  }
+
+  .sp-navi-btns .hamburger.is-active .ttl {
+    font-size: 0;
+  }
+
+  .sp-navi-btns .hamburger.is-active .ttl::after {
+    content: "CLOSE";
+    font-size: 10px;
+  }
+}
